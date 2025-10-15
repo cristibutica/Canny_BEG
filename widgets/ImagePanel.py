@@ -7,6 +7,7 @@ class ImagePanel(QtWidgets.QWidget):
     def __init__(self):
         super().__init__()
 
+        self.setWindowFilePath("Grayscale Converter")
         self.original_path = "images/mountains.webp"
         self.gray_path = "images/mountains_gray.png"  # new file we will create
 

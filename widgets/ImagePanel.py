@@ -55,8 +55,8 @@ class ImagePanel(QtWidgets.QWidget):
         self.imageLabel.setPixmap(pixmap)
         self.imageLabel.setScaledContents(True)
 
-        # self.gray_path = file_path.split("/")[] + "_gray" + file_path.split(".")[1]
-        # print(self.gray_path)
+       # self.gray_path = file_path.split("/") + "_gray" + file_path.split(".")[1]
+       # print(self.gray_path)
 
 
 

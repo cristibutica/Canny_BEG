@@ -3,6 +3,22 @@ from PySide6 import QtWidgets, QtGui, QtCore
 from PySide6.QtWidgets import QFileDialog
 from skimage import io, color
 from skimage.util import img_as_ubyte
+import cv2 as cv
+
+max_lowThreshold = 100
+window_name = 'Edge Map'
+title_trackbar = 'Min Threshold:'
+ratio = 3
+kernel_size = 3
+
+def CannyThreshold(val, src, src_gray):
+    low_threshold = val
+    img_blur = cv.blur(src_gray, (3, 3))
+    detected_edges = cv.Canny(img_blur, low_threshold, low_threshold * ratio, kernel_size)
+    mask = detected_edges != 0
+    dst = src * (mask[:, :, None].astype(src.dtype))
+    cv.imshow(window_name, dst)
+
 
 class ImagePanel(QtWidgets.QWidget):
     def __init__(self):
@@ -51,6 +67,12 @@ class ImagePanel(QtWidgets.QWidget):
             pixmap = QtGui.QPixmap(self.gray_path)
             self.imageLabel.setPixmap(pixmap)
             self.imageLabel.setScaledContents(True)
+
+            print(self.gray_path)
+            src = cv.imread(self.gray_path)
+            src_gray = cv.cvtColor(src, cv.COLOR_BGR2GRAY)
+
+            CannyThreshold(5, src, src_gray)
 
     @QtCore.Slot()
     def pickImage(self):

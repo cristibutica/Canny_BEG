@@ -4,90 +4,14 @@ from PySide6 import QtWidgets, QtGui, QtCore
 from PySide6.QtWidgets import QFileDialog
 from skimage import io, color
 from skimage.util import img_as_ubyte
+
+from algorithms.Canny import CannyThreshold
 from algorithms.convert_to_hex import convert_square_to_hex
 import cv2 as cv
 
+from widgets.ResultWindow import ResultWindow
 
-# --- Helper Class for Displaying Results ---
-class ResultWindow(QtWidgets.QWidget):
-    """A simple QWidget for displaying a numpy image array."""
-
-    def __init__(self, title="Result"):
-        super().__init__()
-        self.setWindowTitle(title)
-
-        # Create a label
-        self.image_label = QtWidgets.QLabel(self)
-        self.image_label.setScaledContents(True)  # Scale image to fit label
-        # Tell label to fill all available space
-        self.image_label.setSizePolicy(QtWidgets.QSizePolicy.Policy.Ignored,
-                                       QtWidgets.QSizePolicy.Policy.Ignored)
-
-        # Set layout
-        layout = QtWidgets.QVBoxLayout(self)
-        layout.setContentsMargins(0, 0, 0, 0)  # No border
-        layout.addWidget(self.image_label)
-
-    def set_image(self, numpy_image):
-        """Converts a numpy array (BGR or Grayscale) to a QPixmap and displays it."""
-
-        # Make a contiguous copy for QImage
-        numpy_image = np.ascontiguousarray(numpy_image)
-
-        # Check if image is grayscale or color
-        if len(numpy_image.shape) == 2:
-            # Grayscale
-            height, width = numpy_image.shape
-            bytes_per_line = width
-            q_format = QtGui.QImage.Format.Format_Grayscale8
-            q_image = QtGui.QImage(numpy_image.data, width, height, bytes_per_line, q_format)
-
-        elif len(numpy_image.shape) == 3:
-            # BGR (from OpenCV)
-            # Must convert to RGB for QImage
-            rgb_image = cv.cvtColor(numpy_image, cv.COLOR_BGR2RGB)
-            height, width, channel = rgb_image.shape
-            bytes_per_line = 3 * width
-            q_format = QtGui.QImage.Format.Format_RGB888
-            q_image = QtGui.QImage(rgb_image.data, width, height, bytes_per_line, q_format)
-
-        else:
-            print("Unsupported image format.")
-            return
-
-        # Check for null image
-        if q_image.isNull():
-            print("Failed to create QImage from numpy array.")
-            return
-
-        pixmap = QtGui.QPixmap.fromImage(q_image)
-
-        if pixmap.isNull():
-            print("Failed to create QPixmap from QImage.")
-            return
-
-        self.image_label.setPixmap(pixmap)
-
-
-# --- MODIFIED Canny Function ---
-max_lowThreshold = 100
 window_name = ['Edge Map Square', 'Edge Map Hexagonal']  # We can use this for titles
-title_trackbar = 'Min Threshold:'
-ratio = 3
-kernel_size = 3
-
-
-def CannyThreshold(val, src, src_gray):
-    low_threshold = val
-    img_blur = cv.blur(src_gray, (3, 3))
-    detected_edges = cv.Canny(img_blur, low_threshold, low_threshold * ratio, kernel_size)
-    mask = detected_edges != 0
-    # Create the 3-channel BGR image
-    dst = src * (mask[:, :, None].astype(src.dtype))
-
-    # Return the final image
-    return dst
-
 
 # --- Modified ImagePanel Class ---
 class ImagePanel(QtWidgets.QWidget):
@@ -175,10 +99,10 @@ class ImagePanel(QtWidgets.QWidget):
 
             # --- 5. Call processing function ---
             # Process the square image
-            square_canny_result = CannyThreshold(5, src_gray_bgr, src_gray_np)
+            square_canny_result = CannyThreshold(0, 0, src_gray_bgr, src_gray_np)
 
             # Process the hex image
-            hex_canny_result = CannyThreshold(5, src_hex_bgr, hex_image)
+            hex_canny_result = CannyThreshold(0, 0, src_hex_bgr, hex_image)
 
             # --- 6. Display results in new Qt Windows ---
 
@@ -189,15 +113,14 @@ class ImagePanel(QtWidgets.QWidget):
                 self.hex_window.close()
 
             # Create, resize, and show the SQUARE result window
-            self.square_window = ResultWindow(title=window_name[0])
+            self.square_window = ResultWindow(src_gray_bgr, src_gray_np, title="Canny Result", structure_type="square")
             self.square_window.set_image(square_canny_result)
-            self.square_window.resize(800, 600)  # Set your desired size!
+            self.square_window.resize(800, 600)
             self.square_window.show()
 
-            # Create, resize, and show the HEXAGONAL result window
-            self.hex_window = ResultWindow(title=window_name[1])
+            self.hex_window = ResultWindow(src_hex_bgr, hex_image, title="Canny Result", structure_type="hex")
             self.hex_window.set_image(hex_canny_result)
-            self.hex_window.resize(800, 600)  # Set your desired size!
+            self.hex_window.resize(800, 600)
             self.hex_window.show()
 
     @QtCore.Slot()

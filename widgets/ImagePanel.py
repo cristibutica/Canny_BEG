@@ -113,12 +113,12 @@ class ImagePanel(QtWidgets.QWidget):
                 self.hex_window.close()
 
             # Create, resize, and show the SQUARE result window
-            self.square_window = ResultWindow(src_gray_bgr, src_gray_np, title="Canny Result", structure_type="square")
+            self.square_window = ResultWindow(src_gray_bgr, src_gray_np, title="Canny Result Square", structure_type="square")
             self.square_window.set_image(square_canny_result)
             self.square_window.resize(800, 600)
             self.square_window.show()
 
-            self.hex_window = ResultWindow(src_hex_bgr, hex_image, title="Canny Result", structure_type="hex")
+            self.hex_window = ResultWindow(src_hex_bgr, hex_image, title="Canny Result Hexagonal", structure_type="hex")
             self.hex_window.set_image(hex_canny_result)
             self.hex_window.resize(800, 600)
             self.hex_window.show()

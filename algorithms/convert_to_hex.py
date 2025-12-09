@@ -41,11 +41,11 @@ def convert_square_to_hex(square_image):
 
     # --- 2. Start of Pseudo-code Translation (Corrected) ---
     for j in range(4 * N):
-        j1 = j * 2  # Odd column index
-        j2 = j * 2 + 1  # Even column index
+        j1 = j * 2  # Even column index
+        j2 = j * 2 + 1  # Odd column index
 
         for i in range(7 * M):
-            # --- // interpolation at odd columns ---
+            # --- // interpolation at even columns ---
 
             # Sub-pixel Y-coordinates
             Xy1_sub = 8 * i + 3  #
@@ -69,7 +69,7 @@ def convert_square_to_hex(square_image):
             beta1 = (Xy1_sub - Ay1_sub) / 7.0  #
             hex_image[i, j1] = (1 - beta1) * f_A + beta1 * f_B  #
 
-            # --- //interpolation at even columns ---
+            # --- //interpolation at odd columns ---
 
             # Sub-pixel Y-coordinates
             Xy2_sub = 8 * i + 4 + 3  #

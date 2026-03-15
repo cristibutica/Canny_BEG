@@ -6,3 +6,4 @@ env/
 .idea/
 .vscode/
 images/
+.DS_Store

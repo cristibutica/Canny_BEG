@@ -1,7 +1,7 @@
 # Canny Edge Detection with Virtual Hexagonal Image Structure
 
 ## Overview
-This project implements an enhanced version of the Canny edge detection algorithm by applying it to a virtual hexagonal image structure[cite: 68]. Traditional image processing relies on square grids, which suffer from ambiguous connectivity and distance anisotropy. By simulating a hexagonal grid, this application benefits from uniform connectivity (6 equidistant neighbors) and better circular symmetry, resulting in superior edge detection. 
+This project implements an enhanced version of the Canny edge detection algorithm by applying it to a virtual hexagonal image structure. Traditional image processing relies on square grids, which suffer from ambiguous connectivity and distance anisotropy. By simulating a hexagonal grid, this application benefits from uniform connectivity (6 equidistant neighbors) and better circular symmetry, resulting in superior edge detection. 
 
 A key innovation in this project is the use of an optimized **linear interpolation** method for square-to-hexagonal grid conversion, which significantly reduces computational complexity compared to traditional bi-linear or tri-linear methods.
 
@@ -31,7 +31,7 @@ Ensure you have **Python 3.11** installed on your system to ensure full compatib
 ### Setup
 1. Clone the repository:
    ```bash
-   git clone [https://github.com/cristibutica/Canny_BEG.git](https://github.com/cristibutica/Canny_BEG.git)
+   git clone https://github.com/cristibutica/Canny_BEG.git
    cd Canny_BEG
    ```
 
